@@ -65,24 +65,6 @@ def post_field(table_name, field):
 #                tables[table_name]['meta']['id']=dict_to_hash(tables[table_name]['meta']['hashes'])
 #                return Response(status=200)
 #        return Response(status=200)
-    
-#@app.route('/api/table/update/<table_name>/indicators/update',methods = ['POST']) 
-#def update_indicators(table_name):
-#    print('Updating indicators')
-#    data=json.loads(request.data.decode())
-#    existing_indicator_names=[ind['name'] for ind in tables[table_name]['indicators']]
-#    status=200
-#    for indicator_update in data:
-#        try:
-#            loc=existing_indicator_names.index(indicator_update['name'])
-#            tables[table_name]['indicators'][loc]['value']=indicator_update['value']
-#            tables[table_name]['indicators'][loc]['raw_value']=indicator_update['raw_value']
-#        except:
-#            tables[table_name]['indicators'].append(indicator_update)
-#    tables[table_name]['meta']['hashes']['indicators']=dict_to_hash(tables[table_name]['indicators'])
-#    tables[table_name]['meta']['id']=dict_to_hash(tables[table_name]['meta']['hashes'])        
-#    return Response(status=status)
-            
 
 @app.route('/api/table/<table_name>/<field>',methods = ['GET']) 
 def get_field(table_name, field):
