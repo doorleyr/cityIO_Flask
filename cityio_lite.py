@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 """
 Created on Thu Jul  2 16:28:20 2020
 
@@ -9,8 +10,8 @@ Created on Thu Jul  2 16:28:20 2020
 from flask import Flask, request, jsonify, Response
 import datetime
 import json
+from cityio import module_hash
 from flask_cors import CORS
-import hashlib
 
 app = Flask(__name__)
 CORS(app)
@@ -20,8 +21,10 @@ corktown_base=json.load(open('corktown_base.json'))
 tables={'corktown': corktown_base}
 
 def dict_to_hash(the_dict):
-    return hashlib.md5(json.dumps(the_dict).encode()).hexdigest()
-  
+    # cityio.module_hash returns a hex string value that is consistent with cityio
+    return module_hash(json.dumps(the_dict))
+
+ 
 @app.route('/api/table/update/<table_name>/<field>',methods = [ 'POST', 'DELETE'])
 def post_field(table_name, field):
     if request.method=='POST':
