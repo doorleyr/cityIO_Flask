@@ -18,7 +18,6 @@ app = Flask(__name__)
 CORS(app)
 
 table_names = [n for n in sys.argv[1:len(sys.argv)]]
-print(table_names)
 tables={}
 
 for table_name in table_names:
