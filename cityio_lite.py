@@ -12,20 +12,24 @@ import datetime
 import json
 from cityio import module_hash
 from flask_cors import CORS
+import sys
 
 app = Flask(__name__)
 CORS(app)
 
-corktown_base=json.load(open('corktown_base.json'))
+table_names = [n for n in sys.argv[1:len(sys.argv)]]
+print(table_names)
+tables={}
 
-tables={'corktown': corktown_base}
+for table_name in table_names:
+    print('Loading {}'.format(table_name))
+    tables[table_name]=json.load(open('base/{}_base.json'.format(table_name)))
 
 def dict_to_hash(the_dict):
     # cityio.module_hash returns a hex string value that is consistent with cityio
     return module_hash(json.dumps(the_dict))
 
- 
-@app.route('/api/table/update/<table_name>/<field>',methods = [ 'POST', 'DELETE'])
+@app.route('/api/table/<table_name>/<field>',methods = [ 'POST', 'DELETE'])
 def post_field(table_name, field):
     if request.method=='POST':
         data=json.loads(request.data.decode())
@@ -45,29 +49,6 @@ def post_field(table_name, field):
             return Response(status=200)
         else:
             return Response(status=200)
-        
-#@app.route('/api/table/update/<table_name>/<field>/<subfield>',methods = [ 'POST', 'DELETE'])
-#def post_sub_field(table_name, field, subfield):
-#    if request.method=='POST':
-#        data=json.loads(request.data.decode())
-#        if field not in tables[table_name]:
-#            return Response(status=404)
-#        if subfield in tables[table_name][field]:
-#            resp=Response(status=200)
-#        else:
-#            resp=Response(status=201)
-#        tables[table_name][field][subfield]=data
-#        tables[table_name]['meta']['hashes'][field]=dict_to_hash(tables[table_name][field])
-#        tables[table_name]['meta']['id']=dict_to_hash(tables[table_name]['meta']['hashes'])
-#        return resp
-#    else:
-#        if field in tables[table_name]:
-#            if subfield in tables[table_name][subfield]:
-#                del tables[table_name][field][subfield]
-#                tables[table_name]['meta']['hashes'][field]=dict_to_hash(tables[table_name][field])
-#                tables[table_name]['meta']['id']=dict_to_hash(tables[table_name]['meta']['hashes'])
-#                return Response(status=200)
-#        return Response(status=200)
 
 @app.route('/api/table/<table_name>/<field>',methods = ['GET']) 
 def get_field(table_name, field):
@@ -81,6 +62,5 @@ def get_sub(table_name, field, subfield):
 def get_sub_sub(table_name, field, subfield, subsubfield):
     return jsonify(tables[table_name][field][subfield][subsubfield]), 200
 
- 
 if __name__ == '__main__':
    app.run(debug = True)
