@@ -28,18 +28,16 @@ def dict_to_hash(the_dict):
     # cityio.module_hash returns a hex string value that is consistent with cityio
     return module_hash(json.dumps(the_dict))
 
-@app.route('/api/table/<table_name>/<field>',methods = [ 'POST', 'DELETE'])
+@app.route('/api/table/<table_name>/<field>/',methods = [ 'POST', 'DELETE'])
 def post_field(table_name, field):
     if request.method=='POST':
         data=json.loads(request.data.decode())
-        if field in tables[table_name]:
-            resp=Response(status=200)
-        else:
-            resp=Response(status=200)
+        resp=Response(status=200)
         tables[table_name][field]=data
         now_ts=str(datetime.datetime.now().timestamp())
         tables[table_name]['meta']['hashes'][field]=dict_to_hash(tables[table_name][field])
         tables[table_name]['meta']['id']=dict_to_hash(tables[table_name]['meta']['hashes'])
+        tables[table_name]['meta']['timestamp']=now_ts
         return resp
     else:
         if field in tables[table_name]:
@@ -49,15 +47,15 @@ def post_field(table_name, field):
         else:
             return Response(status=200)
 
-@app.route('/api/table/<table_name>/<field>',methods = ['GET']) 
+@app.route('/api/table/<table_name>/<field>/',methods = ['GET']) 
 def get_field(table_name, field):
     return jsonify(tables[table_name][field]), 200
 
-@app.route('/api/table/<table_name>/<field>/<subfield>',methods = ['GET']) 
+@app.route('/api/table/<table_name>/<field>/<subfield>/',methods = ['GET']) 
 def get_sub(table_name, field, subfield):
     return jsonify(tables[table_name][field][subfield]), 200
 
-@app.route('/api/table/<table_name>/<field>/<subfield>/<subsubfield>',methods = ['GET']) 
+@app.route('/api/table/<table_name>/<field>/<subfield>/<subsubfield>/',methods = ['GET']) 
 def get_sub_sub(table_name, field, subfield, subsubfield):
     return jsonify(tables[table_name][field][subfield][subsubfield]), 200
 
