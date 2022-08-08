@@ -10,9 +10,9 @@ Created on Thu Jul  2 16:28:20 2020
 from flask import Flask, request, jsonify, Response
 import datetime
 import json
-from cityio import module_hash
 from flask_cors import CORS
 import sys
+import hashlib
 
 app = Flask(__name__)
 CORS(app)
@@ -25,8 +25,7 @@ for table_name in table_names:
     tables[table_name]=json.load(open('base/{}_base.json'.format(table_name)))
 
 def dict_to_hash(the_dict):
-    # cityio.module_hash returns a hex string value that is consistent with cityio
-    return module_hash(json.dumps(the_dict))
+    return hashlib.sha224(json.dumps(the_dict).encode()).hexdigest()
 
 @app.route('/api/table/<table_name>/<field>/',methods = [ 'POST', 'DELETE'])
 def post_field(table_name, field):
