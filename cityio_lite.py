@@ -46,6 +46,10 @@ def post_field(table_name, field):
         else:
             return Response(status=200)
 
+@app.route('/api/tables/list/',methods = ['GET']) 
+def get_tables_list():
+    return jsonify(list(tables.keys())), 200
+
 @app.route('/api/table/<table_name>/<field>/',methods = ['GET']) 
 def get_field(table_name, field):
     return jsonify(tables[table_name][field]), 200
